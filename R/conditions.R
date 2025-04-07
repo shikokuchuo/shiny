@@ -166,9 +166,6 @@ saveCallStackDigest <- function(callStack) {
 appendCallStackWithDedupe <- function(lst, x) {
   digests <- vapply(lst, getCallStackDigest, character(1), warn = TRUE)
   xdigest <- getCallStackDigest(x, warn = TRUE)
-  stopifnot(all(nzchar(digests)))
-  stopifnot(length(xdigest) == 1)
-  stopifnot(nzchar(xdigest))
   if (xdigest %in% digests) {
     return(lst)
   } else {
