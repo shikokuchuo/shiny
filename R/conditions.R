@@ -61,18 +61,26 @@
 #' @keywords internal
 NULL
 
+deparse_safe <- function(x) {
+  out <- deparse(x, width.cutoff = 500L, backtick = TRUE, control = NULL)
+  length(out) == 1L || return(paste0(out, collapse = " "))
+  out
+}
+
 getCallNames <- function(calls) {
-  sapply(calls, function(call) {
-    if (is.function(call[[1]])) {
-      "<Anonymous>"
-    } else if (inherits(call[[1]], "call")) {
-      paste0(format(call[[1]]), collapse = " ")
-    } else if (typeof(call[[1]]) == "promise") {
-      "<Promise>"
-    } else {
-      paste0(as.character(call[[1]]), collapse = " ")
-    }
-  })
+  as.character(
+    lapply(calls, function(call) {
+      if (is.call(call[[1]])) {
+        deparse_safe(call[[1]])
+      } else if (is.function(call[[1]])) {
+        "<Anonymous>"
+      } else if (typeof(call[[1]]) == "promise") {
+        "<Promise>"
+      } else {
+        paste0(as.character(call[[1]]), collapse = " ")
+      }
+    })
+  )
 }
 
 getLocs <- function(calls) {
