@@ -75,18 +75,12 @@ getCallNames <- function(calls) {
   })
 }
 
+# Faster version of getCallNames, whilst maintaining same structure
 getCallNamesForHash <- function(calls) {
-  as.character(
-    lapply(calls, function(call) {
-      if (is.function(call[[1]])) {
-        "<Anonymous>"
-      } else if (typeof(call[[1]]) == "promise") {
-        "<Promise>"
-      } else {
-        paste0(as.character(call[[1]]), collapse = " ")
-      }
-    })
-  )
+  lapply(calls, function(call) {
+    name <- call[[1L]]
+    is.function(name) || typeof(name) == "promise" || return(name)
+  })
 }
 
 getLocs <- function(calls) {
