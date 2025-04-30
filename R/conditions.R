@@ -75,6 +75,20 @@ getCallNames <- function(calls) {
   })
 }
 
+getCallNamesForHash <- function(calls) {
+  as.character(
+    lapply(calls, function(call) {
+      if (is.function(call[[1]])) {
+        "<Anonymous>"
+      } else if (typeof(call[[1]]) == "promise") {
+        "<Promise>"
+      } else {
+        paste0(as.character(call[[1]]), collapse = " ")
+      }
+    })
+  )
+}
+
 getLocs <- function(calls) {
   vapply(calls, function(call) {
     srcref <- attr(call, "srcref", exact = TRUE)
@@ -144,7 +158,7 @@ getCallStackDigest <- function(callStack, warn = FALSE) {
     )
   }
 
-  rlang::hash(getCallNames(callStack))
+  rlang::hash(getCallNamesForHash(callStack))
 }
 
 saveCallStackDigest <- function(callStack) {
