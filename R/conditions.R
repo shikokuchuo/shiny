@@ -79,7 +79,9 @@ getCallNames <- function(calls) {
 getCallNamesForHash <- function(calls) {
   lapply(calls, function(call) {
     name <- call[[1L]]
-    is.function(name) || typeof(name) == "promise" || return(name)
+    if (is.function(name)) return("<Anonymous>")
+    if (typeof(name) == "promise")) return("<Promise>")
+    name
   })
 }
 
